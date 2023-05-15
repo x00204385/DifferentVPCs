@@ -23,27 +23,20 @@ resource "aws_instance" "wordpressinstance" {
   vpc_security_group_ids = [aws_security_group.allow-ssh.id, aws_security_group.allow-http.id,
   aws_security_group.allow-https.id]
 
-  connection {
-    type        = "ssh"
-    user        = "ubuntu"
-    private_key = file("~/.ssh/tud-aws-use.pem")
-    #private_key = file("~/.ssh/tud-aws.pem")
-    host        = self.public_ip
-  }
-
-  # Install NFS support and mount the EFS volume. Then execute the provisionining script.
-  # Replace the DB endpoint in wp-config.php with the RDS end point
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt update",
-      "sudo apt upgrade -y"
-    ]
-  }
+  user_data = <<-EOF
+	  #!/bin/bash
+	  sudo touch /tmp/foo.txt
+	  sudo apt update
+	  sudo apt upgrade -y
+          sudo apt install apache2 -y
+	  EOF
 
   tags = {
     Name = "wordpress-instance"
   }
 }
 
-
+output "private_key_path_output" {
+   value = local.private_key_path
+}
 

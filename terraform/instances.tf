@@ -1,13 +1,5 @@
-#	echo "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password by '${var.db_password}';" | mysql -u root 
-#	echo "CREATE USER '${var.db_username}'@'%' IDENTIFIED WITH mysql_native_password BY '${var.db_password};" | mysql -u root --password=${var.db_password}
-#	echo "CREATE USER 'wp_user'@localhost IDENTIFIED BY '${var.db_password}';" | mysql -u root --password=${var.db_password}
-#	echo "CREATE DATABASE wp;" | mysql -u root --password=${var.db_password}
-#	echo "GRANT ALL PRIVILEGES ON wp.* TO '${var.db_username}'@localhost WITH GRANT OPTION; FLUSH PRIVILEGES;"| mysql -u root --password=${var.db_password}
-#      "/home/ubuntu/provision-wordpress.sh"
-
-
-
 locals {
+  instance_name = "$(terraform.workspace)-instance"
   public_subnets  = [aws_subnet.public-subnet-1a.id, aws_subnet.public-subnet-1b.id]
   private_subnets = [aws_subnet.private-subnet-1a.id, aws_subnet.private-subnet-1b.id]
   private_key_path = "~/.ssh/${var.key-pair}.pem"
@@ -27,7 +19,7 @@ resource "aws_instance" "wordpressinstance" {
 	  #!/bin/bash
 	  sudo touch /tmp/foo.txt
 	  sudo apt update
-	  sudo apt upgrade -y
+	  # sudo apt upgrade -y
           sudo apt install apache2 -y
 	  EOF
 

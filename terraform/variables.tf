@@ -20,7 +20,7 @@ variable "private_subnet_cidr_blocks" {
 
 
 variable "availability_zones" {
-    default = ["eu-west-1a", "eu-west-1b"]
+  default = ["eu-west-1a", "eu-west-1b"]
 }
 
 variable "profile" {

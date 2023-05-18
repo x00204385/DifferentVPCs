@@ -7,5 +7,5 @@ output "instance_dns" {
 }
 
 output "lb_endpoint" {
-  value = "${aws_lb.tudproj-LB.dns_name}"
+  value = aws_lb.tudproj-LB.dns_name
 }

@@ -13,11 +13,13 @@ resource "aws_launch_configuration" "wordpress-LC" {
   name_prefix   = "wordpress-instance"
   image_id      = var.instance-ami
   instance_type = "t2.micro"
-  user_data     = file("ec2-init.sh")
   key_name      = var.key-pair
 
   security_groups = [aws_security_group.allow-ssh.id, aws_security_group.allow-http.id,
   aws_security_group.allow-https.id]
+
+  user_data = file("../scripts/provision.sh")
+
 
   lifecycle {
     create_before_destroy = true
@@ -25,12 +27,15 @@ resource "aws_launch_configuration" "wordpress-LC" {
 }
 
 resource "aws_autoscaling_group" "wpASG" {
-  name                 = "wpASG"
-  min_size             = 2
-  max_size             = 6
-  desired_capacity     = 2
-  launch_configuration = aws_launch_configuration.wordpress-LC.name
-  vpc_zone_identifier  = local.public_subnets
+  name                      = "wpASG"
+  min_size                  = 2
+  max_size                  = 6
+  desired_capacity          = 2
+  health_check_grace_period = 120
+  launch_configuration      = aws_launch_configuration.wordpress-LC.name
+  vpc_zone_identifier       = local.public_subnets
+
+
 
   tag {
     key                 = "Name"

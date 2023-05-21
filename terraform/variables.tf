@@ -42,3 +42,8 @@ variable "db_username" {
 variable "db_password" {
   default = "Computing1"
 }
+
+variable "primary" {
+  type        = bool
+  description = "Determine whether this is the primary or standby region"
+}

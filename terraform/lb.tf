@@ -45,7 +45,7 @@ resource "aws_lb_target_group" "wordpress-TG" {
 
 resource "aws_autoscaling_attachment" "wpasg2tg" {
   autoscaling_group_name = aws_autoscaling_group.wpASG.id
-  alb_target_group_arn   = aws_lb_target_group.wordpress-TG.arn
+  lb_target_group_arn    = aws_lb_target_group.wordpress-TG.arn
 }
 
 

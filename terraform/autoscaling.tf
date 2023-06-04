@@ -20,6 +20,7 @@ resource "aws_launch_configuration" "wordpress-LC" {
 
   user_data = file("../scripts/provision.sh")
 
+  depends_on = [aws_nat_gateway.nat-gw]
 
   lifecycle {
     create_before_destroy = true
@@ -33,11 +34,12 @@ resource "aws_autoscaling_group" "wpASG" {
   desired_capacity          = 2
   health_check_grace_period = 120
   launch_configuration      = aws_launch_configuration.wordpress-LC.name
-  vpc_zone_identifier       = local.public_subnets
+  vpc_zone_identifier       = local.private_subnets
 
    lifecycle { 
     ignore_changes = [desired_capacity, target_group_arns]
   }
+
 
   tag {
     key                 = "Name"

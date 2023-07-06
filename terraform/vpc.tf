@@ -1,86 +1,29 @@
-resource "aws_vpc" "main" {
-  cidr_block           = var.vpc_cidr_block
-  instance_tenancy     = "default"
-  enable_dns_support   = "true"
-  enable_dns_hostnames = "true"
-  tags = {
-    Name = "wordpress-VPC"
-  }
-}
+#
+# https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/4.0.2
+#
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "4.0.2"
 
-resource "aws_subnet" "public-subnet-1a" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.public_subnet_cidr_blocks[0]
-  map_public_ip_on_launch = "true"
-  availability_zone       = var.availability_zones[0]
+  name = "wp"
+  cidr = var.vpc_cidr_block
 
-  tags = {
-    Name    = "public-subnet-1a"
-    Purpose = "wordpress-POC"
-  }
-}
+  azs             = var.availability_zones
+  private_subnets = var.private_subnet_cidr_blocks
+  private_subnet_names = ["private-subnet-1a", "private-subnet-1b"]
 
-resource "aws_subnet" "private-subnet-1a" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.private_subnet_cidr_blocks[0]
-  map_public_ip_on_launch = "false"
-  availability_zone       = var.availability_zones[0]
+  public_subnets  = var.public_subnet_cidr_blocks
+  public_subnet_names = ["public-subnet-1a", "public-subnet-1b"]
 
-  tags = {
-    Name    = "private-subnet-1a"
-    Purpose = "wordpress-POC"
-  }
-}
 
-resource "aws_subnet" "public-subnet-1b" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.public_subnet_cidr_blocks[1]
-  map_public_ip_on_launch = "true"
-  availability_zone       = var.availability_zones[1]
+  enable_nat_gateway = var.enable_nat_gateway
+  single_nat_gateway = true
+  one_nat_gateway_per_az = false
 
-  tags = {
-    Name    = "public-subnet-1b"
-    Purpose = "wordpress-POC"
-  }
-}
 
-resource "aws_subnet" "private-subnet-1b" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.private_subnet_cidr_blocks[1]
-  map_public_ip_on_launch = "false"
-  availability_zone       = var.availability_zones[1]
+  enable_dns_hostnames = true
+  enable_dns_support   = true
 
-  tags = {
-    Name    = "private-subnet-1b"
-    Purpose = "wordpress-POC"
-  }
-}
-resource "aws_internet_gateway" "internet-gw" {
-  vpc_id = aws_vpc.main.id
+  map_public_ip_on_launch = true
 
-  tags = {
-    Name    = "internet-gw"
-    Purpose = "wordpress-POC"
-  }
-}
-
-resource "aws_route_table" "public-rt" {
-  vpc_id = aws_vpc.main.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.internet-gw.id
-  }
-  tags = {
-    Purpose = "wordpress-POC"
-  }
-}
-
-resource "aws_route_table_association" "public-rta-1a" {
-  subnet_id      = aws_subnet.public-subnet-1a.id
-  route_table_id = aws_route_table.public-rt.id
-}
-
-resource "aws_route_table_association" "public-rta-1b" {
-  subnet_id      = aws_subnet.public-subnet-1b.id
-  route_table_id = aws_route_table.public-rt.id
 }

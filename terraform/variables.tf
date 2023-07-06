@@ -47,3 +47,18 @@ variable "primary" {
   type        = bool
   description = "Determine whether this is the primary or standby region"
 }
+
+
+variable "enable_nat_gateway" {
+  description = "Enable NAT gateway for VPC"
+  type        = bool
+  default     = true
+}
+
+variable "vpc_tags" {
+  description = "Tags to apply to resources created by VPC module"
+  type        = map(string)
+  default = {
+       Name = "wordpress-VPC"
+  }
+}

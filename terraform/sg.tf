@@ -1,5 +1,5 @@
 resource "aws_security_group" "allow-ssh" {
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = module.vpc.vpc_id
   name        = "allow-ssh"
   description = "security group that allows ssh and all egress traffic"
   egress {
@@ -23,7 +23,7 @@ resource "aws_security_group" "allow-ssh" {
 
 
 resource "aws_security_group" "allow-http" {
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = module.vpc.vpc_id
   name        = "allow-http"
   description = "security group that allows http and all egress traffic"
   egress {
@@ -47,7 +47,7 @@ resource "aws_security_group" "allow-http" {
 
 
 resource "aws_security_group" "allow-https" {
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = module.vpc.vpc_id
   name        = "allow-https"
   description = "security group that allows https and all egress traffic"
   egress {
@@ -70,7 +70,7 @@ resource "aws_security_group" "allow-https" {
 }
 
 resource "aws_security_group" "allow-msql2" {
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = module.vpc.vpc_id
   name        = "allow-mysql2"
   description = "security group that allows msql and all egress traffic"
   egress {
@@ -93,7 +93,7 @@ resource "aws_security_group" "allow-msql2" {
 }
 
 resource "aws_security_group" "allow-efs" {
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = module.vpc.vpc_id
   name        = "allow-efs"
   description = "EFS security group allow access to port 2049"
 

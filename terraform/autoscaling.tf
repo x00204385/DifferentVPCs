@@ -2,8 +2,8 @@
 
 locals {
   instance_name    = "$(terraform.workspace)-instance"
-  public_subnets   = [aws_subnet.public-subnet-1a.id, aws_subnet.public-subnet-1b.id]
-  private_subnets  = [aws_subnet.private-subnet-1a.id, aws_subnet.private-subnet-1b.id]
+  public_subnets   = module.vpc.public_subnets
+  private_subnets  = module.vpc.private_subnets
   private_key_path = "~/.ssh/${var.key-pair}.pem"
   servers          = ["s1", "s2"]
 }
@@ -20,7 +20,7 @@ resource "aws_launch_configuration" "wordpress-LC" {
 
   user_data = file("../scripts/provision.sh")
 
-  depends_on = [aws_nat_gateway.nat-gw]
+  depends_on = [module.vpc]
 
   lifecycle {
     create_before_destroy = true

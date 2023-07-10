@@ -27,3 +27,27 @@ module "vpc" {
   map_public_ip_on_launch = true
 
 }
+
+
+module wp_instances {
+  source = "./modules/wp_instances"
+
+  count         = length(local.public_subnets)
+
+  subnet_id = local.public_subnets[count.index]
+
+
+  security_group_ids = [aws_security_group.allow-ssh.id, aws_security_group.allow-http.id,
+   aws_security_group.allow-https.id]
+
+}
+
+module autoscaling {
+    source = "./modules/autoscaling"
+
+    subnets = local.private_subnets
+
+security_group_ids = [aws_security_group.allow-ssh.id, aws_security_group.allow-http.id,
+   aws_security_group.allow-https.id]
+}
+

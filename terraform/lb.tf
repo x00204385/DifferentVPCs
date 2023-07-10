@@ -34,17 +34,18 @@ resource "aws_lb_target_group" "wordpress-TG" {
 
 }
 
-# This gets replaced with an ASG attachment
-# resource "aws_lb_target_group_attachment" "wordpress-attach" {
-#   count            = length(aws_instance.wordpressinstance)
-#   target_group_arn = aws_lb_target_group.wordpress-TG.arn
-#   target_id        = aws_instance.wordpressinstance[count.index].id
-#   port             = 80
-# }
+# Attach instances to target group 
+resource "aws_lb_target_group_attachment" "wordpress-attach" {
+  count            = length(local.public_subnets)
+  target_group_arn = aws_lb_target_group.wordpress-TG.arn
+  target_id        = module.wp_instances[count.index].id
+  port             = 80
+}
 
-
+# Attach autoscaling group to target group 
 resource "aws_autoscaling_attachment" "wpasg2tg" {
-  autoscaling_group_name = aws_autoscaling_group.wpASG.id
+  # autoscaling_group_name = aws_autoscaling_group.wpASG.id
+  autoscaling_group_name = module.autoscaling.id
   lb_target_group_arn    = aws_lb_target_group.wordpress-TG.arn
 }
 

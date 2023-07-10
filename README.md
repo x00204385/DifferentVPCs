@@ -27,3 +27,8 @@ availability_zones = ["us-east-1a", "us-east-1b"]
 instance-ami = "ami-007855ac798b5175e"
 key-pair = "******"
 ```
+# Modules
+
+Code uses modules to accomplish various infrastructure builds.
+- In main.tf, the Terraform VPC module is used to create the VPC with associated internet gateway, subnets, routing tables and (optionally) a NAT gateway.
+- In modules directory, Two modules provision EC2 instances that run Apache. One creates the instances explicitly and the other creates them as part of an autoscaling group. The autoscaling group includes CloudWatch alarms to trigger scale-out and scale-in.

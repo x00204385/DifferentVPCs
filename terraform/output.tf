@@ -15,7 +15,7 @@ output "application_endpoint" {
 }
 
 output "asg_name" {
-  value       = aws_autoscaling_group.wpASG.name
+  value       = module.autoscaling.id
   description = "Name of the auto scaling group"
 }
 
